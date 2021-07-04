@@ -102,7 +102,7 @@ export class VideoComponent extends Component {
       });
       let data = {
         link: this.state.link,
-        user: this.props.userid,
+        user: user,
       };
       this.state[this.state.type].push(this.state.link);
       await axios

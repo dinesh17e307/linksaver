@@ -69,7 +69,7 @@ export class Titlecard extends Component {
 
       let data = {
         content: this.state.content,
-        user: this.props.userid,
+        user: user,
       };
       axios
         .post(`/${this.state.type}.json?auth=${token}`, JSON.stringify(data))
