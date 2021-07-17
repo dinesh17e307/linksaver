@@ -7,7 +7,12 @@ import React, { useState, useEffect } from "react";
 
 import Titlecard from "./Components/TitleCard/Titlecard";
 import VideoComponent from "./Components/videoComponent/VideoComponent";
-import { BrowserRouter as Router, Route, withRouter } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  withRouter,
+} from "react-router-dom";
 import { navigate } from "@reach/router";
 import LandingPage from "./Components/LandingPage/LandingPage";
 import NormalVideo from "./Components/NormalVideo/NormalVideo";
@@ -15,66 +20,72 @@ import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
 import Auth from "./Components/Auth/Auth";
 import { connect } from "react-redux";
 import * as actions from "./Components/store/action/index";
+import "./Components/Loading/Loading.css";
+import Logout from "./Components/Logout";
 const App = (props) => {
+  const [loading, setloading] = useState(false);
+  const [logouts, setlogouts] = useState(false);
   useEffect(() => {
     props.onauthcheck();
   }, []);
+  const logout = async () => {
+    setloading(true);
+    props.onlogout();
+    setloading(false);
+    setlogouts(true);
+  };
+
   return (
     <div className="App">
-      <div>
-        {/* <Paper style={{ backgroundColor: "skyblue", color: "black" }}>
-            <Grid xs={12} sm={12} md={12} lg={12}>
-              <Toolbar className="appbar">
-                <Grid xs={2} sm={3}>
-                  Home
-                </Grid>
-                <Grid xs={2} sm={3}>
-                  About us
-                </Grid>
-                <Grid xs={2} sm={3}>
-                  Contact us
-                </Grid>
-              </Toolbar>
+      {loading ? (
+        <div className="loader"></div>
+      ) : (
+        <>
+          <Router>
+            <Route exact path="/youtubevideo" component={VideoComponent} />
+            <Route exact path="/normalvideo" component={NormalVideo} />
+            <Route exact path="/addvideo" component={Titlecard} />
+            <Route exact path="/home" component={LandingPage} />
+            <Route exact path="/" component={Auth} />
+            <Redirect to="/" />
+          </Router>
+
+          <Grid item>
+            <Grid
+              container
+              lg={12}
+              xs={12}
+              style={{
+                position: "relative",
+                bottom: "10px",
+                left: "10%",
+                alignContent: "center",
+                marginTop: "20px",
+              }}
+            >
+              {/* <Grid item lg={6} xs={6}>
+                <Fab variant="extended" color="primary">
+                  {" "}
+                  <ChatBubbleIcon />
+                  FeedBack
+                </Fab>
+              </Grid> */}
+              {/* <Grid item lg={6} xs={6}>
+                <Fab
+                  variant="extended"
+                  color="primary"
+                  onClick={logout}
+                  style={{ display: props.isauth ? "" : "none" }}
+                >
+                  {" "}
+                  <ChatBubbleIcon />
+                  LOGOUT
+                </Fab>
+              </Grid> */}
             </Grid>
-          </Paper> */}
-      </div>
-
-      {/* <div style={{ marginTop: "50px", width: "200px" }}> */}
-      {/* <IconButton color="primary">
-            <PhotoCamera
-              onClick={this.opencam}
-              style={{ width: "100px", height: "100px" }}
-            />
-          </IconButton> */}
-
-      {/* {webcam}
-          <Imgs /> */}
-      {/* </div> */}
-      <Router>
-        <Route exact path="/youtubevideo" component={VideoComponent} />
-        <Route exact path="/normalvideo" component={NormalVideo} />
-        <Route exact path="/addvideo" component={Titlecard} />
-        <Route exact path="/home" component={LandingPage} />
-        <Route exact path="/" component={Auth} />
-      </Router>
-      <Grid
-        item
-        lg={9}
-        xs={12}
-        style={{
-          position: "relative",
-          bottom: "10px",
-          left: "10%",
-          alignContent: "center",
-          marginTop: "20px",
-        }}
-      >
-        <Fab variant="extended" color="primary">
-          {" "}
-          <ChatBubbleIcon />
-          FeedBack
-        </Fab>
-      </Grid>
+          </Grid>
+        </>
+      )}
     </div>
     // </div>
   );
@@ -83,11 +94,14 @@ const App = (props) => {
 const mapstatetoprops = (state) => {
   return {
     isauth: state.tokenid !== null,
+    tokenid: state.tokenid,
   };
 };
 const mapdispatchtoprops = (dispatch) => {
   return {
     onauthcheck: () => dispatch(actions.authcheckstate()),
+    onsetredirectpath: () => dispatch(actions.setauthredirectpath()),
+    onlogout: () => dispatch(actions.logout()),
   };
 };
 export default connect(mapstatetoprops, mapdispatchtoprops)(App);

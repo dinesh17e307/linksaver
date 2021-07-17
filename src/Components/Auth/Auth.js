@@ -126,6 +126,7 @@ const Auth = (props) => {
   }
   let isauthenticate = null;
   if (props.isauth) {
+    console.log(props.redirectpath);
     isauthenticate = <Redirect to={props.redirectpath} />;
   }
 

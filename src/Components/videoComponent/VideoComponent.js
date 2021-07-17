@@ -70,7 +70,10 @@ export class VideoComponent extends Component {
       queryParmas.section +
       ".json" +
       "?auth=" +
-      token;
+      token +
+      '&orderBy="user"&equalTo="' +
+      user +
+      '"';
     axios
       .get(queryParam)
       .then((res) => res.data)
